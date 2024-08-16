@@ -7,7 +7,7 @@ const loadPhone = async (InputSearchText, isShowAll) => {
 }
 
 const displayPhones = (phones, isShowAll) => {
-    console.log(phones);
+    // console.log(phones);
 
     // step- 1 jekhane card info gulo bosabo seta pailam 
     const phoneContainer = document.getElementById('phone-container')
@@ -24,7 +24,7 @@ const displayPhones = (phones, isShowAll) => {
         showAllContainer.classList.add('hidden')
     }
 
-    console.log('is show all', isShowAll);
+    // console.log('is show all', isShowAll);
     //display only first 12 phones
     // phones = phones.slice(0, 12);
 
@@ -34,7 +34,7 @@ const displayPhones = (phones, isShowAll) => {
     }
 
     phones.forEach(phone => {
-        console.log(phone);
+        // console.log(phone);
         // step-2 create a div
         const phoneCard = document.createElement('div');
         phoneCard.classList = `card bg-gray-100 p-4 shadow-xl`;
@@ -46,8 +46,8 @@ const displayPhones = (phones, isShowAll) => {
         <div class="card-body">
             <h2 class="card-title">${phone.phone_name}</h2>
             <p>If a dog chews shoes whose shoes does he choose?</p>
-            <div class="card-actions justify-end">
-                <button class="btn btn-primary">Buy Now</button>
+            <div class="card-actions justify-center">
+                <button onclick="showDetails('${phone.slug}')" class="btn btn-primary">Show Details</button>
             </div>
         </div>
         `;
@@ -58,12 +58,42 @@ const displayPhones = (phones, isShowAll) => {
     toggleLoadingSpinner(false);
 }
 
+// show details clicked and open modal
+const showDetails = async (id) => {
+    // console.log('clicked show details button', id);
+    //load single phone data 
+    const res = await fetch(`https://openapi.programming-hero.com/api/phone/${id}`);
+    const data = await res.json();
+    // console.log(data);
+    const phone = data.data
+
+    showPhoneDetails(phone)
+
+}
+
+// for modal
+const showPhoneDetails = (phone) => {
+    console.log(phone);
+    const phoneName = document.getElementById('show-details-phone-name');
+    phoneName.innerText = phone.name;
+
+    const showDetailsContainer = document.getElementById('show-detail-container');
+    showDetailsContainer.innerHTML =`
+        <img src="${phone.image}">
+        <p>Storage: <span>${phone.mainFeatures?.storage}</span></p>
+        <p>GPS: <span>${phone.others?.GPS}</span></p>
+    `
+
+        //show the modal
+        show_details_modal.showModal()
+}
+
 // handle search button
 const handleSearch = (isShowAll) => {
     toggleLoadingSpinner(true);
     const searchField = document.getElementById('search-field');
     const searchText = searchField.value;
-    console.log(searchText);
+    // console.log(searchText);
     loadPhone(searchText, isShowAll)
 }
 
